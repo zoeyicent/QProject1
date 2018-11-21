@@ -414,7 +414,7 @@ export async function doAppFillObject ({commit, state}, {frmID, frmObj, method, 
                 });
                 break;
             case "grd":
-                // o.Value = Nilai;
+                o.Value = Nilai.Data.data;
                 commit('setAppForms_Data', {
                         id: frmID, 
                         path: 'Forms.' + frmObj + '.' + k + '.Grid.Rows.data', 

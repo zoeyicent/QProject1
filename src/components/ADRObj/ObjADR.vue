@@ -320,8 +320,7 @@
 		</q-field>
 
 		<div class="row">
-			<q-input class="col-xs-2"
-				v-show="true" 
+			<q-input class="col-xs-2" v-show="false" 
 				v-model="ObjADR" 
 				float-label="IY" 
 				:ref="'ref'+pObj.Code"
@@ -330,16 +329,14 @@
 				color="grey-6"
 				@input="$v.ObjADR.$touch"
 			/>
-			<q-input class="col-xs-4"
-				v-show="true" 
+			<q-input class="col-xs-4" v-show="false" 
 				v-model="pObj.Pops[pObj.PopCode].Value" 
 				float-label="Code" 
 				readonly
 				inverted-light
 				color="grey-6"
 			/>
-			<q-input class="col-xs-5"
-				v-show="true" 
+			<q-input class="col-xs-5" v-show="false" 
 				v-model="pObj.Pops[pObj.PopDesc].Value" 
 				float-label="Description" 
 				readonly

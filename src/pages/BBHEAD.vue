@@ -80,15 +80,35 @@
 		},
 		
 		watch: {
-			'myForm.Forms.frmBBHEAD.MCPCNOIY.PopData': function (data) {
-				console.log('MCPCNOIY.PopData ' + data.length , data)
+			'myForm.Forms.frmBBHEAD.BADIVI.PopData': function (data) {
+				if (data.length == undefined) {
+					this.myForm.Forms['frm'+this.frmID].MCPCNOIY.PopSetValue({
+	                    flag: true, iy: "", code: "", desc: "", data: {}                   
+	                });
+				} 
+				this.myForm.Forms['frm'+this.frmID].MCPCNOIY.Condition = 
+				" MFDIVI = '" + this.myForm.Forms['frm'+this.frmID].BADIVI.Value + "' "
+			},
+			'myForm.Forms.frmBBHEAD.BADEPT.PopData': function (data) {
 				if (data.length == undefined) {
 					this.myForm.Forms['frm'+this.frmID].BACCNOIY.PopSetValue({
 	                    flag: true, iy: "", code: "", desc: "", data: {}                   
 	                });
 				} 
 				this.myForm.Forms['frm'+this.frmID].BACCNOIY.Condition = 
-				" And MCPCNOIY = '" + this.myForm.Forms['frm'+this.frmID].MCPCNOIY.Value + "' "
+				" MCDEPT = '" + this.myForm.Forms['frm'+this.frmID].BADEPT.Value + "' And " +
+				" MCPCNOIY = '" + this.myForm.Forms['frm'+this.frmID].MCPCNOIY.Value + "' "
+			},			
+			'myForm.Forms.frmBBHEAD.MCPCNOIY.PopData': function (data) {
+				// console.log('MCPCNOIY.PopData ' + data.length , data)
+				if (data.length == undefined) {
+					this.myForm.Forms['frm'+this.frmID].BACCNOIY.PopSetValue({
+	                    flag: true, iy: "", code: "", desc: "", data: {}                   
+	                });
+				} 
+				this.myForm.Forms['frm'+this.frmID].BACCNOIY.Condition = 
+				" MCDEPT = '" + this.myForm.Forms['frm'+this.frmID].BADEPT.Value + "' And " +
+				" MCPCNOIY = '" + this.myForm.Forms['frm'+this.frmID].MCPCNOIY.Value + "' "
 			},
 			// 'myForm.Forms.frmBBHEAD.TDLGTH.Value': function (data) {
 			// 	if (data != 0) {
