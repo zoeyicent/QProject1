@@ -1,114 +1,108 @@
 <template>
-  <div>
-
-	<div v-show="localForm.tampilLayarPertama">	
-		<ObjGrid 
-			:pGridName="this.frmName" 
-			@eForm="CommandClick"
-		/>
-	</div>
-
-	<div v-show="!localForm.tampilLayarPertama" class="text-left q-ma-sm round dense row">
-		<div v-if="loadingObject" class="col-12 col-md-6">
+  <div class="docs-table">
+  	<div v-show="myForm.Properties.layout==='1'">
+		<ObjGrid :frmID="frmID" />
+  	</div>
+  	<div v-show="myForm.Properties.layout==='2'" class="text-left q-ma-xs round dense row">
+  		<div class="col-xs-12 col-md-6">
 			<ObjADR 
-				v-for="(Obj, index) in frmObj" 
-				:pObj="Obj" 
+				v-for="(Obj, index) in myForm.Forms['frm'+frmID]" 
+				:pObj="Obj" :pFrmObj="'frm'+frmID"
 				:key="index"
 				v-if="Obj.Panel === 'Panel1' ? true : false"
 			/>
 			<q-btn color="green" label="Set Menu Access" @click="layoutModal=true" />
-		</div>
-		<div v-if="loadingObject" class="col-12 col-md-6">
+  		</div>
+		<div class="col-xs-12 col-md-6">
 			<ObjADR 
-				v-for="(Obj, index) in frmObj" 
-				:pObj="Obj" 
+				v-for="(Obj, index) in myForm.Forms['frm'+frmID]" 
+				:pObj="Obj" :pFrmObj="'frm'+frmID"
 				:key="index"
 				v-if="Obj.Panel === 'Panel2' ? true : false"
-			/>
-		</div>
-	</div>
+			/>		
+  		</div>
 
-	<q-modal 
-      v-model="layoutModal"
-      minimized
-	  no-backdrop-dismiss
-	  no-esc-dismiss
-    >
-		<q-modal-layout>
-			<q-toolbar slot="header">
-				<q-btn
-					flat
-					round
-					dense
-					@click="layoutModal = false"
-					icon="reply"
-					wait-for-ripple
-				/>
-				<q-toolbar-title>
-					Access Menu
-				</q-toolbar-title>
-				<q-btn :disable="varreadonly" flat round dense icon="accessibility" @click="userModal=true">
-					<q-tooltip anchor="top right" self="bottom left">
-						<div><strong>Duplicate</strong></div>
-					</q-tooltip>
-				</q-btn>
-        		<q-btn :disable="varreadonly" flat round dense icon="select_all" @click="selectAll">
-					<q-tooltip anchor="top right" self="bottom left">
-						<div><strong>Select All</strong></div>
-					</q-tooltip>
-        		</q-btn>
-				<q-btn :disable="varreadonly" flat round dense icon="clear_all" @click="clearAll">
-					<q-tooltip anchor="top right" self="bottom left">
-						<div><strong>Clear All</strong></div>
-					</q-tooltip>
-				</q-btn>
-			</q-toolbar>
+		<q-modal 
+			v-model="layoutModal"
+			minimized
+			no-backdrop-dismiss
+			no-esc-dismiss
+		>
+			<q-modal-layout>
+				<q-toolbar slot="header">
+					<q-btn
+						flat
+						round
+						dense
+						@click="layoutModal = false"
+						icon="reply"
+						wait-for-ripple
+					/>
+					<q-toolbar-title>
+						Access Menu
+					</q-toolbar-title>
+					<q-btn :disable="varreadonly" flat round dense icon="accessibility" @click="userModal=true">
+						<q-tooltip anchor="top right" self="bottom left">
+							<div><strong>Duplicate</strong></div>
+						</q-tooltip>
+					</q-btn>
+					<q-btn :disable="varreadonly" flat round dense icon="select_all" @click="selectAll">
+						<q-tooltip anchor="top right" self="bottom left">
+							<div><strong>Select All</strong></div>
+						</q-tooltip>
+					</q-btn>
+					<q-btn :disable="varreadonly" flat round dense icon="clear_all" @click="clearAll">
+						<q-tooltip anchor="top right" self="bottom left">
+							<div><strong>Clear All</strong></div>
+						</q-tooltip>
+					</q-btn>
+				</q-toolbar>
+				
+				<q-list style="width: 500px; max-width: 90vw;">
+					<q-item v-for="(item, index) in menulist" v-bind:key="index">
+						<q-item-main class="myfont">
+							<q-select 
+								:readonly="varreadonly" 
+								:inverted-light="varreadonly"
+								:color="WarnaReadOnly"
+								v-if="item.TMACES.length != 0 ? true : false" 
+								:float-label="item.TMMENU" 
+								v-model="item.HAKAKSES" multiple 
+								:options="item.TMACES" />
+							<div v-else style="font-weight: bold">{{item.TMMENU}}</div>
+						</q-item-main>
+					</q-item>
+				</q-list>
 			
-			<q-list style="width: 500px; max-width: 90vw;">
-				<q-item v-for="(item, index) in menulist" v-bind:key="index">
-					<q-item-main class="myfont">
-						<q-select 
-							:readonly="varreadonly" 
-							:inverted-light="varreadonly"
-							:color="WarnaReadOnly"
-							v-if="item.TMACES.length != 0 ? true : false" 
-							:float-label="item.TMMENU" 
-							v-model="item.HAKAKSES" multiple 
-							:options="item.TMACES" />
-						<div v-else style="font-weight: bold">{{item.TMMENU}}</div>
-					</q-item-main>
-				</q-item>
-			</q-list>
-		
-		</q-modal-layout>
-	</q-modal>
+			</q-modal-layout>
+		</q-modal>
 
-	<q-modal 
-      v-model="userModal"
-      minimized
-	  no-backdrop-dismiss
-	  no-esc-dismiss
-    >
-		<q-modal-layout>
-			<q-toolbar slot="header">
-				<q-toolbar-title>
-					User List
-				</q-toolbar-title>
-				<q-btn
-					flat
-					round
-					dense
-					@click="userModal = false"
-					icon="clear"
-					wait-for-ripple
-				/>			
-			</q-toolbar>
-			<div>
-				XXX
-			</div>
-		</q-modal-layout>
-	</q-modal>
-
+		<q-modal 
+			v-model="userModal"
+			minimized
+			no-backdrop-dismiss
+			no-esc-dismiss
+		>
+			<q-modal-layout>
+				<q-toolbar slot="header">
+					<q-toolbar-title>
+						User List
+					</q-toolbar-title>
+					<q-btn
+						flat
+						round
+						dense
+						@click="userModal = false"
+						icon="clear"
+						wait-for-ripple
+					/>			
+				</q-toolbar>
+				<div>
+					XXX
+				</div>
+			</q-modal-layout>
+		</q-modal>
+  	</div>
   </div>
 </template>
 
@@ -116,77 +110,102 @@
 
 	import api from 'src/api'
 	import auth from 'src/auth/auth.vue';
-	import ObjGrid from '../components/ADRObj/ObjGrid.vue';
-	import ObjADR from '../components/ADRObj/ObjADR.vue';
-	import { mapGetters, mapActions } from 'vuex';
+	import ADRObjs from '../components/ADRObj/main.js';
+	import { mapGetters, mapMutations } from 'vuex';
 
 	export default { 
-		components : { ObjGrid, ObjADR },
-  		name: 'TBLUSR',
+  		components : ADRObjs,	
 	    created () { 
-	    	this.localFormAction = this.$findTree(this.getMenuTree, this.$route.name).actionForm ;
-			auth.loadFormObject(this);
-			this.CommandClick (this.localFormAction.mode, 'VAEDXLP');
+	    	auth.setupForm({
+	    		form: this,						// --> local this
+	    		formId: 'frmID',  				// --> local variabel name 
+	    		CommandClick: this.CommandClick
+	    	});
 	    },
-	    activated () {
-			this.doMenuAction( {Mode: this.localFormAction.mode, Action: this.localFormAction} );
-	    },
-	    deactivated () {
-			this.doMenuAction( {Mode: '', Action: this.localFormAction} );
-	    },			    
 		computed: {
-	      	...mapGetters('Grid',['getGridData']),
-			...mapGetters('Menu',['getMenuTree','getMenuObjectData']),
-			loadingObject() {
-	      		return this.frmObj.length === 0 ? false : true;
-	      	},
-			localForm () {
-				return this.$localFormAction(this, '');
+			...mapGetters('App',['getAppForms']),
+			myForm() {
+				return this.getAppForms[this.frmID];
 			},
 			WarnaReadOnly() {
 				return this.varreadonly ? 'grey-6' : 'primary';
-			},
+			},	
 		},	
 		methods: {
-	      	...mapActions('Menu',['doMenuAction','doMenuSaveData']),
-			CommandClick: function (Mode, HakAkses) {
+			...mapMutations('App',['setAppForms_Data']),
+			CommandClick: function (mode) {
+				if (mode != "") {
 
-				if (Mode != "") {
-					switch(Mode) {
-						case "1": // Add	
-							this.loadQuery(Mode);
+					auth.actionForm({
+						form: this,
+						frmID: this.frmID, 
+						mode:mode
+					});	
+
+					switch(mode) {
+						case "1": // Add
+							this.loadQuery(mode);
 					    	break;
-					    case "2": // Edit					    
-							auth.fillFormObject(this, Mode)
+					    case "2": // Edit
+					    	auth.fillFormObject({
+					    		form: this, 
+					    		frmID: this.frmID, 
+					    		frmObj: 'frm' + this.frmID, 
+					    		method: ''
+							})
 							.then((response) => {
-                                this.loadQuery(Mode);
+                                this.loadQuery(mode);
                             })
-					    	return;
 					    	break;
-						case "3": // Delete
-					    	auth.saveData(this, Mode);
+					    case "3": // Delete
+					    	auth.saveData({
+					    		form: this, 
+					    		frmID: this.frmID, 
+					    		frmObj: 'frm' + this.frmID,
+					    		method: ''
+					    	});
 					    	return;
 					        break;
 						case "4": // Save
-							this.frmOther = this.menulist;
-					    	auth.saveData(this, this.localFormAction.mode);
+
+							// begin buat nembak data
+							let frmTBLUAM = new Object
+								frmTBLUAM['Tipe'] = 'Other'
+								frmTBLUAM['Code'] = 'TBLUAM'
+								frmTBLUAM['Value'] = this.menulist
+							
+							let frmOther = new Object
+								frmOther['TBLUAM'] = frmTBLUAM
+
+							this.setAppForms_Data({
+								id: this.frmID,
+								path: 'Forms.frmTBLUAM',
+								data: frmOther})
+							// end buat nembak data
+
+					    	auth.saveData({
+					    		form: this, 
+					    		frmID: this.frmID, 
+					    		frmObj: 'frm' + this.frmID,
+					    		method: ''
+					    	})
 					    	return;
 					    	break;
-					    case "5": // Cancel				
-							auth.resetValidation(this);
-							this.clearAll();
+					    case "5": // Cancel
 					        break;
-						case "6": // View
-							auth.fillFormObject(this, Mode)
+					    case "6": // View
+					    	auth.fillFormObject({
+					    		form: this, 
+					    		frmID: this.frmID, 
+					    		frmObj: 'frm' + this.frmID, 
+					    		method: ''
+							})
 							.then((response) => {
-                                this.loadQuery(Mode);
+                                this.loadQuery(mode);
                             })
-					    	return;
 					    	break;					        
-					}
+					}					
 				}
-				auth.clearFormObject(this, Mode);
-				this.doMenuAction( {Mode: Mode, Action: this.localFormAction} );
 			},
 			loadQuery (Mode) {
 
@@ -195,7 +214,7 @@
 				var params = new Object;
 					params['Controller'] = 'cTBLUSR';
 					params['Method'] = 'getQuery';
-					params['TUUSERIY'] = this.frmObj.TUUSERIY.Value;
+					params['TUUSERIY'] = this.myForm.Forms['frm'+this.frmID].TUUSERIY.Value;
 
 				api.fnRequestData (params, '')
 				.then((response) => {
@@ -226,18 +245,15 @@
 					mylist[i].HAKAKSES = []
 				}
 			},
-		},
+		},			
 		data () {
 			return {
-				frmName: 'TBLUSR',
-				frmObj: '', // frmObj berhubungan dengan auth.loadFormObject
-				frmOther: '',
-				localFormAction: { type: Object },
+				frmID: 'TBLUSR',
 				layoutModal: false,
 				menulist: [],
 				varreadonly: false,
 				userModal: false,
 	      	}
-		}
+	    }
 	}
 </script>
