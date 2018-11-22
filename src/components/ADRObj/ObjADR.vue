@@ -404,6 +404,7 @@
 				<q-btn 
 					v-show="true" 
 					v-if="pObj.Action.A.has === false ? false : true" 
+					:disabled="pObj.Action.A.disabled === false ? false : true" 
 					rounded dense
 					class="q-ma-xs" 
 					color="primary" icon="add"

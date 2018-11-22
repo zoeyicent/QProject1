@@ -116,33 +116,22 @@
 			// ...mapMutations('App',['setAppForms_Data']),
 			// ...mapActions('App',['doAppLoadObject']),
 			CommandClick: function (mode) {
-
 				if (mode != "") {
-
-					auth.actionForm({
-						form: this,
-						frmID: this.frmID, 
-						mode: mode
-					});	
-
 					switch(mode) {
 					    case "1": // Add
+							auth.actionForm({form: this, mode: mode});	
 					    	// alert('masuk sini');
 					    	break;
 					    case "2": // Edit
-					    	auth.fillFormObject({
-					    		form: this, 
-					    		frmID: this.frmID, 
-					    		frmObj: 'frm' + this.frmID, 
-					    		method: ''
-					    	});
+					    case "6": // View
+					    	auth.fillFormObject({form: this, mode: mode});
 					    	break;
 					    case "3": // Delete
 					    	auth.saveData({
 					    		form: this, 
 					    		frmID: this.frmID, 
 					    		frmObj: 'frm' + this.frmID,
-					    		method: ''
+					    		mode: '3'
 					    	});
 					    	return;
 					        break;
@@ -152,21 +141,13 @@
 					    		form: this, 
 					    		frmID: this.frmID, 
 					    		frmObj: 'frm' + this.frmID,
-					    		method: ''
 					    	})
 					    	// console.log('End Saving Data')
 					    	return;
 					    	break;
 					    case "5": // Cancel		
-					        break;
-					    case "6": // View
-					    	auth.fillFormObject({
-					    		form: this, 
-					    		frmID: this.frmID, 
-					    		frmObj: 'frm' + this.frmID, 
-					    		method: ''
-					    	});
-					    	break;					        
+							auth.actionForm({form: this, mode: mode});	
+					        break;			        
 					}					
 				}
 			}

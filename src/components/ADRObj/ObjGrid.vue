@@ -31,6 +31,8 @@
 	      dense
 	      color="secondary"
 	      :hide-bottom="formType === 'griddetail' ? true : false"
+	      selection="multiple"
+	      :selected.sync="myGrid.Grid.MultiSelected === undefined ? [] : myGrid.Grid.MultiSelected "
 	    > 
 
 	    	<GridHeader slot="header" slot-scope="props"
@@ -123,6 +125,13 @@
 				data: ''
 			});
 
+
+			this.setAppForms_Data({ 
+				id: this.frmID, 
+				path: sF+'Grid.MultiSelected', 
+				data: []
+			});
+
 			this.setAppForms_Data({
 				id: this.frmID,
 				path:sF+'Grid.LoadDataGrid',
@@ -156,7 +165,7 @@
 	      	},
 	      	myGrid() {
 
-				console.log('Masuk myGrid', this.frmID + ' (' + this.subForm + ') ');
+				// console.log('Masuk myGrid', this.frmID + ' (' + this.subForm + ') ');
 
 	      		if (this.subForm==="") {
 		      		return this.getAppForms[this.frmID];

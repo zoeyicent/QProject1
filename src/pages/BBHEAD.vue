@@ -35,6 +35,12 @@
 					/>  	
 				</div>
 			</ObjADR>  	
+			<ObjADR 
+				v-for="(Obj, index) in myForm.Forms['frm'+frmID]" 
+				:pObj="Obj" :pFrmObj="'frm'+frmID"
+				:key="index"
+				v-if="Obj.Panel === 'Panel3' ? true : false"
+			/>  			
   		</div>
 
   	</div>
@@ -54,8 +60,8 @@
 	    		form: this,						// --> local this
 	    		formId: 'frmID',  				// --> local variabel name 
 	    		CommandClick: this.CommandClick
-	    	}).then(() => {
-		    	auth.loadFormOject({
+	    	}).then(async () => {
+		    	await auth.loadFormOject({
 		    		form: this, 
 		    		frmID: this.frmID, 
 		    		frmObj: 'frmBBLINE', 
@@ -116,6 +122,18 @@
 			// 		this.myForm.Forms['frm'+this.frmID].TSSYCD.Max = Number(data);					
 			// 	}
 			// }
+
+			'myForm.Forms.frmBBHEAD.BBLINE.Value': function (data) {
+				let total = 0;
+				let gridBBLINE = data;
+				if(gridBBLINE != '') {
+					for (let index in gridBBLINE) {
+						total += Number(gridBBLINE[index].BBTOTL)
+					}
+				}
+				this.myForm.Forms.frmBBHEAD.BATOTL.Value = total;
+			},
+
 		},
 				
 		methods: {
@@ -123,31 +141,21 @@
 			// ...mapActions('App',['doAppLoadObject']),
 			CommandClick: function (mode) {
 				if (mode != "") {
-
-					auth.actionForm({
-						form: this,
-						frmID: this.frmID, 
-						mode:mode
-					});	
-
 					switch(mode) {
 					    case "1": // Add
+							auth.actionForm({form: this, mode: mode});	
 					    	// alert('masuk sini');
 					    	break;
 					    case "2": // Edit
-					    	auth.fillFormObject({
-					    		form: this, 
-					    		frmID: this.frmID, 
-					    		frmObj: 'frm' + this.frmID, 
-					    		method: ''
-					    	});
+					    case "6": // View
+					    	auth.fillFormObject({form: this, mode: mode});
 					    	break;
 					    case "3": // Delete
 					    	auth.saveData({
 					    		form: this, 
 					    		frmID: this.frmID, 
 					    		frmObj: 'frm' + this.frmID,
-					    		method: ''
+					    		mode: '3'
 					    	});
 					    	return;
 					        break;
@@ -157,22 +165,13 @@
 					    		form: this, 
 					    		frmID: this.frmID, 
 					    		frmObj: 'frm' + this.frmID,
-					    		method: ''
 					    	})
 					    	// console.log('End Saving Data')
 					    	return;
 					    	break;
 					    case "5": // Cancel		
-					        break;
-					    case "6": // View
-					    	auth.fillFormObject({
-					    		form: this, 
-					    		frmID: this.frmID, 
-					    		frmObj: 'frm' + this.frmID, 
-					    		method: ''
-					    	});
-
-					    	break;					        
+							auth.actionForm({form: this, mode: mode});	
+					        break;			        
 					}					
 				}
 

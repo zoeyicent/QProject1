@@ -110,7 +110,7 @@
 						});
 
 			},
-			async confirm(form, Title, message) {
+			async confirm(form, title, message) {
 
 				return await form.$q.dialog({
 							title: Title,
@@ -124,6 +124,18 @@
 							return false;
 						});
 
+			},	
+			msg(form, title, message) {
+				return form.$q.dialog({
+							title: title,
+							message: message,
+						});
+			},	
+			noPermision(form) {
+				return form.$q.dialog({
+							title: "Access Denied",
+							message: "This Action not allowed",
+						});
 			},	
 		},
 
@@ -226,34 +238,24 @@
 		},
 
 
-		actionForm ({form, frmID, mode}) {			
+		actionForm ({form, frmID, mode}) {
+
+			// Begin Get Default Value Parameter
+			if ( (frmID === undefined ? '' : frmID) === '') {
+				frmID = store.getters['App/getAppModules'].GetMenuID(form.$route.name);
+			}
+			// End Get Default Value Parameter
+
 			store.dispatch('App/doAppMenuAction', {
 				frmID: frmID, 
 				mode: mode
 			});
 
-			// console.log("Auth - actionForm , this :", form)
-			/*o = Object, k = Key*/
-
-			/*	
-				Begin Proses Looping data (Store)
-				Example : TBLMNU.Forms 
-			*/			
-			var o = store.state.App.AppForms[frmID].Forms;
-			// console.log('Auth - actionForm , Object :', o)
-			for (var k in o) {
-				// console.log('object ', k)
-				this.clearFormObject({
-					form: form,
-					frmID: frmID, 
-					frmObj: k, 
-					mode: mode					
-				});
-			}
-			/*	
-				End Proses Looping data (Store)
-				Example : TBLMNU.Forms 
-			*/			
+			this.clearFormAllObject({
+				form: form,
+				frmID: frmID,
+				mode: mode,
+			});
 
 		},
 
@@ -318,6 +320,37 @@
 
 		},
 
+
+		clearFormAllObject({form, frmID, mode}) {
+			
+			// Begin Get Default Value Parameter
+			if ( (frmID === undefined ? '' : frmID) === '') {
+				frmID = store.getters['App/getAppModules'].GetMenuID(form.$route.name);
+			}
+			// End Get Default Value Parameter
+
+			/*	
+				Begin Proses Looping data (Store)
+				Example : TBLMNU.Forms 
+			*/			
+			var o = store.state.App.AppForms[frmID].Forms;
+			// console.log('Auth - actionForm , Object :', o)
+			for (var k in o) {
+				// console.log('object ', k)
+				this.clearFormObject({
+					form: form,
+					frmID: frmID, 
+					frmObj: k, 
+					mode: mode					
+				});
+			}
+			/*	
+				End Proses Looping data (Store)
+				Example : TBLMNU.Forms 
+			*/				
+		},
+
+
 		clearFormObject({form, frmID, frmObj, mode}) {
 			/* f = Form, k = Key, o = Object */	
 			if (mode === "3" || 	// Mode Delete
@@ -375,8 +408,18 @@
 					o.ReadOnly = true;
 				} else if (mode == '6') { // --> Tampilan Mode
 					o.ReadOnly = true;
+					if (o.Tipe === 'grd') {
+						o.Action.A.disabled = true;
+						o.Action.E.disabled = true;
+						o.Action.D.disabled = true;
+					}
 				} else {
 					o.ReadOnly = false;
+					if (o.Tipe === 'grd') {
+						o.Action.A.disabled = false;
+						o.Action.E.disabled = false;
+						o.Action.D.disabled = false;
+					}
 				}
 				// End Set ReadOnly Mode (Merubah Background Object Jadi ABU-ABU )
 				
@@ -415,18 +458,34 @@
 
 
 
-		async fillFormObject({form, frmID, frmObj, method}) {
+		async fillFormObject({form, frmID, frmObj, method, mode}) {
 
 			var Saya = this;
+
+			// Begin Get Default Value Parameter
+			if ( (frmID === undefined ? '' : frmID) === '') {
+				frmID = store.getters['App/getAppModules'].GetMenuID(form.$route.name);
+			}
+			// End Get Default Value Parameter
 
 
 			await this.loading.loadData( form , 'Filling Your Form Data.... Please Wait...', 'Gears', '', 
 				async () => {
 
+					this.clearFormAllObject({
+						form: form,
+						frmID: frmID,
+						mode: mode,
+					});
+
+				    var params = new Object;
+				        params = store.getters['App/getAppForms'][frmID].Grid.RowData;
+				        params['Mode'] = mode;
+
 					await store.dispatch('App/doAppFillObject', { 
 							  frmID: frmID, 
-							  frmObj: frmObj, 
-							  method: method, 
+							  frmObj: frmObj === undefined ? ('frm' + frmID) : frmObj, 
+							  method: method === undefined ? '' : method, 
 							  dataParams: store.getters['App/getAppForms'][frmID].Grid.RowData
 							}).then( function(response) {
 								if (response) {
@@ -441,6 +500,11 @@
 									form.$q.notify('Data not found, please refresh the grid!');  
 			    					return;
 			    				}
+
+								store.dispatch('App/doAppMenuAction', {
+									frmID: frmID, 
+									mode: mode
+								});
 
 				    		}).catch(function (error) {
 								form.$q.notify('error Fill Form ' + error );  
@@ -539,10 +603,17 @@
 			return gagal;
 		},
 
-		async saveData({form, frmID, frmObj, method}) {
+		async saveData({form, frmID, frmObj, method, mode}) {
 
 			var Data = new Object;
-			var mode = store.state.App.AppForms[frmID].Properties.modeAction;
+
+			// Begin Get Default Value Parameter
+			if ( (mode === undefined ? '' : mode) === '') {
+				mode = store.state.App.AppForms[frmID].Properties.modeAction;
+			}
+			// End Get Default Value Parameter
+
+
 			// console.log('auth - saveData , mode : ', mode);
 			if (mode!="3" && mode!="7") {
 				if (this.validationFormObject({
@@ -573,9 +644,19 @@
 						}
 					} // End Looping Object
 				} // End Looping Object Forms
-				console.log(Data);				
+				// console.log(Data);
 			} else {
-				Data['frm'+frmID] = store.state.App.AppForms[frmID].Grid.RowData;
+				if (mode==="3") {
+					Data['frm'+frmID] = store.state.App.AppForms[frmID].Grid.RowData;
+				} else if (mode==="7") {
+					console.log('AAAA', store.state.App.AppForms[frmID].Grid.MultiSelected);
+					var List = store.state.App.AppForms[frmID].Grid.MultiSelected;
+					if (List.length===0) {
+						this.messaging.msg(form, 'Error', 'No Data to confirm' )
+						return;
+					}
+					Data['frm'+frmID] = store.state.App.AppForms[frmID].Grid.MultiSelected;
+				} 
 			}
 
 			var ConfirmationSaving = await this.messaging.loadMsg(form, mode);
@@ -586,7 +667,7 @@
 				async () => {
 					await store.dispatch('App/doAppSaveData', { 
 							  frmID: frmID, 
-							  method: method, 
+							  method: method === undefined ? '' : method, 
 							  mode: mode,
 							  dataParams: Data
 							}).then( 
@@ -602,17 +683,11 @@
 											form.$q.notify({color: 'positive',message: response.message});
 										}
 										if (mode == "1") {
-											var o = store.state.App.AppForms[frmID].Forms;
-											// console.log('Auth - actionForm , Object :', o)
-											for (var k in o) {
-												// console.log('object ', k)
-												Saya.clearFormObject({
-													form: form,
-													frmID: frmID, 
-													frmObj: k, 
-													mode: "5"					
-												});
-											}							
+											Saya.clearFormAllObject({
+												form: form,
+												frmID: frmID,
+												mode: '5',
+											});						
 										} 
 									} else {							
 										console.log('[error] ' + response.message)

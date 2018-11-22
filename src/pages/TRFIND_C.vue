@@ -8,14 +8,42 @@
   	<div v-show="myForm.Properties.layout==='1'">
 		<ObjGrid :frmID="frmID" />
   	</div>
-  	<div v-show="myForm.Properties.layout==='2'" class="text-left q-ma-md round dense row">
-  		<div class="col-xs-12 col-md-6">
+  	<div v-show="myForm.Properties.layout==='2'" class="text-left q-ma-xs round dense row">
+  		<div class="col-xs-12 col-md-8">
+  			<div class="row">
+				<ObjADR 
+					class="col-xs-12 col-md-5"
+					v-for="(Obj, index) in myForm.Forms['frm'+frmID]" 
+					:pObj="Obj" :pFrmObj="'frm'+frmID"
+					:key="index"
+					v-if="Obj.Panel === 'Panel1' ? true : false"
+				/>  	
+  			</div>
+  			<div class="row">
+				<ObjADR 
+					class="col-xs-12 col-md-5"
+					v-for="(Obj, index) in myForm.Forms['frm'+frmID]" 
+					:pObj="Obj" :pFrmObj="'frm'+frmID"
+					:key="index"
+					v-if="Obj.Panel === 'Panel2' ? true : false"
+				/>  	
+  			</div>
 			<ObjADR 
+				class="col-xs-12 col-md-5"
 				v-for="(Obj, index) in myForm.Forms['frm'+frmID]" 
 				:pObj="Obj" :pFrmObj="'frm'+frmID"
 				:key="index"
-				v-if="Obj.Panel === 'Panel1' ? true : false"
-			/>  	
+				v-if="Obj.Panel === 'Panel3' ? true : false"
+			/>    			
+  		</div>
+		<div class="col-xs-12 col-md-4">	
+			<ObjADR 
+				class="col-xs-12 col-md-5"
+				v-for="(Obj, index) in myForm.Forms['frm'+frmID]" 
+				:pObj="Obj" :pFrmObj="'frm'+frmID"
+				:key="index"
+				v-if="Obj.Panel === 'Panel4' ? true : false"
+			/> 				
   		</div>
   	</div>
   </div>
@@ -35,21 +63,23 @@
 	    		formId: 'frmID',  				// --> local variabel name 
 	    		CommandClick: this.CommandClick
 	    	});
+
 	    },
-		// mounted() { console.log('FORM01 mounted', 'Test 1222222') },	
-		// beforeMount () { console.log('FORM01 beforeMount', 'Test 22222') },		
-		// updated() { console.log('FORM01 updated', 'Test 123') },	
-		// beforeUpdate () { console.log('FORM01 beforeUpdate', 'Test 456') },			
-		// activated () { console.log('FORM01 activated', 'active') },
-		// deactivated () { console.log('FORM01 deactivated', 'active') },
+		// mounted() { console.log('TRFIND_C mounted', 'Test 1222222') },	
+		// beforeMount () { console.log('TRFIND_C beforeMount', 'Test 22222') },		
+		// updated() { console.log('TRFIND_C updated', 'Test 123') },	
+		// beforeUpdate () { console.log('TRFIND_C beforeUpdate', 'Test 456') },			
+		// activated () { console.log('TRFIND_C activated', 'active') },
+		// deactivated () { console.log('TRFIND_C deactivated', 'active') },
 		computed: {
 	      	...mapGetters('App',['getAppForms']),
 			myForm() {
-				console.log('Masuk myForm FORM01');
+				console.log('Masuk myForm TRFIND_C');
 				return this.getAppForms[this.frmID];
 				// return [];
 			},			
-		},	
+		},		
+				
 		methods: {
 			// ...mapMutations('App',['setAppForms_Data']),
 			// ...mapActions('App',['doAppLoadObject']),
@@ -58,7 +88,6 @@
 					switch(mode) {
 					    case "1": // Add
 							auth.actionForm({form: this, mode: mode});	
-					    	// alert('masuk sini');
 					    	break;
 					    case "2": // Edit
 					    case "6": // View
@@ -74,13 +103,11 @@
 					    	return;
 					        break;
 					    case "4": // Save
-					    	// console.log('Begin Saving Data')
 					    	auth.saveData({
 					    		form: this, 
 					    		frmID: this.frmID, 
 					    		frmObj: 'frm' + this.frmID,
-					    	})
-					    	// console.log('End Saving Data')
+					    	});
 					    	return;
 					    	break;
 					    case "5": // Cancel		
@@ -88,11 +115,13 @@
 					        break;			        
 					}					
 				}
-			}
+
+			},
+
 		},			
 		data () {
 			return {
-  				frmID: 'FORM01XXXX',
+  				frmID: 'TRFIND_CXXXX',
 	      	}
 	    }
 	}

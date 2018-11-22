@@ -25,6 +25,13 @@
 		    	v-if="FormChildActive.Properties.tombol.A.has"
 		    	v-show="FormChildActive.Properties.tombol.A.show"
 		    	/>
+		    <q-btn dense round outline icon="check_circle"
+		    	class="q-mr-sm"
+		    	@click="FormChildActive.CommandClick('7')"  
+		    	v-if="FormChildActive.Properties.tombol.R.has"
+		    	v-show="FormChildActive.Properties.tombol.R.show"
+		    	/>
+
 		    <q-btn dense round outline icon="save" 
 		    	class="q-mr-sm"
 		    	@click="FormChildActive.CommandClick('4')" 

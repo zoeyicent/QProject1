@@ -312,6 +312,9 @@ export async function doAppLoadGrid ({commit, state}, {params, frmID, id}) {
 
     commit('setAppForms_Data', {id: frmID, path:id + '.Keys', data: Hasil.Key}); 
 
+    // Begin yang membuat hilang yang sudah di check (centang)
+    commit('setAppForms_Data', {id: frmID, path:id + '.MultiSelected', data: []}); 
+    // End yang membuat hilang yang sudah di check (centang)
     // console.log('Action - doAppLoadGrid ', Hasil);
 
     // Begin Pagination
@@ -319,10 +322,12 @@ export async function doAppLoadGrid ({commit, state}, {params, frmID, id}) {
             id: frmID, 
             path: id + '.Pagination.page', 
             data: Hasil.Data.current_page });    
-    // commit('setAppForms_Data', {
-    // 		id: frmID, 
-    // 		path: id + '.Pagination.rowsPerPage', 
-    // 		data: Hasil.Data.total === Hasil.Data.per_page ? 0 : Hasil.Data.per_page });
+    commit('setAppForms_Data', {
+    		id: frmID, 
+    		path: id + '.Pagination.rowsPerPage', 
+    		// data: Hasil.Data.total === Hasil.Data.per_page ? 0 : Hasil.Data.per_page 
+            data: Hasil.Data.per_page 
+    });
     commit('setAppForms_Data', {id: frmID, path:id + '.Pagination.rowsNumber', data: Hasil.Data.total});    
     // End Pagination
 
