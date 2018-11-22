@@ -136,23 +136,14 @@
 			CommandClick: function (mode) {
 				if (mode != "") {
 
-					auth.actionForm({
-						form: this,
-						frmID: this.frmID, 
-						mode:mode
-					});	
-
 					switch(mode) {
 						case "1": // Add
+							auth.actionForm({form: this, mode: mode});	
 							this.loadQuery(mode);
 					    	break;
+					    case "6": // View
 					    case "2": // Edit
-					    	auth.fillFormObject({
-					    		form: this, 
-					    		frmID: this.frmID, 
-					    		frmObj: 'frm' + this.frmID, 
-					    		method: ''
-							})
+					    	auth.fillFormObject({form: this, mode: mode})
 							.then((response) => {
                                 this.loadQuery(mode);
                             })
@@ -162,48 +153,50 @@
 					    		form: this, 
 					    		frmID: this.frmID, 
 					    		frmObj: 'frm' + this.frmID,
-					    		method: ''
+					    		mode: '3'
 					    	});
 					    	return;
 					        break;
 						case "4": // Save
 
 							// begin buat nembak data
-							let frmTBLUAM = new Object
-								frmTBLUAM['Tipe'] = 'Other'
-								frmTBLUAM['Code'] = 'TBLUAM'
-								frmTBLUAM['Value'] = this.menulist
+							// let frmTBLUAM = new Object
+							// 	frmTBLUAM['Tipe'] = 'Other'
+							// 	frmTBLUAM['Code'] = 'TBLUAM'
+							// 	frmTBLUAM['Value'] = this.menulist
 							
-							let frmOther = new Object
-								frmOther['TBLUAM'] = frmTBLUAM
+							// let frmOther = new Object
+							// 	frmOther['TBLUAM'] = frmTBLUAM
+							// 	console.log(frmOther);
 
+							// this.setAppForms_Data({
+							// 	id: this.frmID,
+							// 	path: 'Forms.frmTBLUAM',
+							// 	data: frmOther})
+							// end buat nembak data
+
+							/*
+								Code diatas juga bisa dipakai,
+								Kalau mau simple, just like that.								
+							*/
 							this.setAppForms_Data({
 								id: this.frmID,
 								path: 'Forms.frmTBLUAM',
-								data: frmOther})
-							// end buat nembak data
+								data: {TBLUAM: {Tipe: 'Other',
+											    Code: 'TBLUAM',
+											    Value: this.menulist}}
+							});
 
 					    	auth.saveData({
 					    		form: this, 
 					    		frmID: this.frmID, 
 					    		frmObj: 'frm' + this.frmID,
-					    		method: ''
 					    	})
 					    	return;
 					    	break;
 					    case "5": // Cancel
+							auth.actionForm({form: this, mode: mode});
 					        break;
-					    case "6": // View
-					    	auth.fillFormObject({
-					    		form: this, 
-					    		frmID: this.frmID, 
-					    		frmObj: 'frm' + this.frmID, 
-					    		method: ''
-							})
-							.then((response) => {
-                                this.loadQuery(mode);
-                            })
-					    	break;					        
 					}					
 				}
 			},
