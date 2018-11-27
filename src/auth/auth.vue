@@ -630,7 +630,7 @@
 				// console.log('Auth - actionForm , Object :', o)
 				for (var k in o) { // Begin Looping Object Forms
 					var f = o[k];
-					Data[k] = {}
+					Data[k] = {};
 					for (var fk in f) {  // Begin Looping Object
 						var fo = f[fk];
 						switch (fo.Tipe) {
