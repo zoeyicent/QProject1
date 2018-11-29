@@ -80,12 +80,12 @@ export default {
 
 	async fnPostData (DataParms, UserName) {	
 		
-		// var AppName = store.state.App.sAppInfo.Name;
+		var AppName = store.state.App.AppName;		
 
-		// DataParms['name'] = localStorage.getItem(AppName+'-name');
-		// DataParms['token'] = localStorage.getItem(AppName+'-token');
-		// DataParms['dateInfo'] = localStorage.getItem(AppName+'-dateInfo');
-		// DataParms['AppName'] = AppName;
+		DataParms['AppUserName'] = localStorage.getItem(AppName+'-name');
+		DataParms['AppToken'] = localStorage.getItem(AppName+'-token');
+		DataParms['AppDateInfo'] = localStorage.getItem(AppName+'-dateInfo');
+		DataParms['AppName'] = AppName;
 
         var params = this.fnEncryptParam(DataParms); 
         var Address = process.env.API + 'postData';
