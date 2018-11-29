@@ -1,5 +1,5 @@
 <template>
-  <div class="docs-table">
+  <div class="docs-table" v-if="myForm.Properties === undefined ? false : true">
   <!-- 
   	v-if akan merender ulang (re-create object ulang) 
   	kalau sudah re-create
@@ -67,27 +67,35 @@
 		    		frmObj: 'frmBBLINE', 
 		    		method: 'LoadObjBBLINE'
 		    	});
+		    	this.myForm = this.getAppForms[this.frmID]
 	    	});
 
 	    },
-		// mounted() { console.log('TBLDSC mounted', 'Test 1222222') },	
-		// beforeMount () { console.log('TBLDSC beforeMount', 'Test 22222') },		
-		// updated() { console.log('TBLDSC updated', 'Test 123') },	
-		// beforeUpdate () { console.log('TBLDSC beforeUpdate', 'Test 456') },			
-		// activated () { console.log('TBLDSC activated', 'active') },
-		// deactivated () { console.log('TBLDSC deactivated', 'active') },
+		// mounted() { console.log('BBHEAD mounted', 'Test 1222222') },	
+		// beforeMount () { console.log('BBHEAD beforeMount', 'Test 22222') },		
+		// updated() { console.log('BBHEAD updated', 'Test 123') },	
+		// beforeUpdate () { console.log('BBHEAD beforeUpdate', 'Test 456') },			
+		// activated () { console.log('BBHEAD activated', 'active') },
+		// deactivated () { console.log('BBHEAD deactivated', 'active') },
 		computed: {
 	      	...mapGetters('App',['getAppForms']),
-			myForm() {
-				console.log('Masuk myForm TBLDSC');
-				return this.getAppForms[this.frmID];
-				// return [];
-			},			
+			// myForm() {
+/*
+				gak jadi pakai myForm() dikarenakan tiap kali buka menu yang lain
+				ketigger computed dan watch
+*/
+
+			// 	console.log('Masuk myForm BBHEAD');
+			// 	return this.getAppForms[this.frmID];
+			// 	// getAppForms[frmID];
+			// 	// return [];
+			// },
 		},
 		
 		watch: {
 			'myForm.Forms.frmBBHEAD.BADIVI.PopData': function (data) {
 				if (data.length == undefined) {
+					console.log('masuk sini popdata BBHEAD.vue');
 					this.myForm.Forms['frm'+this.frmID].MCPCNOIY.PopSetValue({
 	                    flag: true, iy: "", code: "", desc: "", data: {}                   
 	                });
@@ -106,7 +114,7 @@
 				" MCPCNOIY = '" + this.myForm.Forms['frm'+this.frmID].MCPCNOIY.Value + "' "
 			},			
 			'myForm.Forms.frmBBHEAD.MCPCNOIY.PopData': function (data) {
-				// console.log('MCPCNOIY.PopData ' + data.length , data)
+				console.log('MCPCNOIY.PopData ' + data.length , data)
 				if (data.length == undefined) {
 					this.myForm.Forms['frm'+this.frmID].BACCNOIY.PopSetValue({
 	                    flag: true, iy: "", code: "", desc: "", data: {}                   
@@ -140,6 +148,7 @@
 			// ...mapMutations('App',['setAppForms_Data']),
 			// ...mapActions('App',['doAppLoadObject']),
 			CommandClick: function (mode) {
+
 				if (mode != "") {
 					switch(mode) {
 					    case "1": // Add
@@ -239,7 +248,8 @@
 		},			
 		data () {
 			return {
-  				frmID: 'TBLDSCXXXX',
+  				frmID: 'BBHEADXXXX',
+  				myForm: {}
 	      	}
 	    }
 	}

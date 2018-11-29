@@ -1,5 +1,6 @@
 <template>
-  <div class="docs-table">
+  <div class="docs-table"
+ 	v-if="myForm.Properties === undefined ? false : true">
   <!-- 
   	v-if akan merender ulang (re-create object ulang) 
   	kalau sudah re-create
@@ -96,7 +97,9 @@
 	    		form: this,						// --> local this
 	    		formId: 'frmID',  				// --> local variabel name 
 	    		CommandClick: this.CommandClick
-	    	});
+	    	}).then(() => {               
+                this.myForm = this.getAppForms[this.frmID];
+            });
 	    },
 		// mounted() { console.log('TBLMNU mounted', 'Test 1222222') },	
 		// beforeMount () { console.log('TBLMNU beforeMount', 'Test 22222') },		
@@ -106,11 +109,11 @@
 		// deactivated () { console.log('TBLMNU deactivated', 'active') },
 		computed: {
 	      	...mapGetters('App',['getAppForms']),
-			myForm() {
-				console.log('Masuk myForm TBLMNU');
-				return this.getAppForms[this.frmID];
-				// return [];
-			},			
+			// myForm() {
+			// 	console.log('Masuk myForm TBLMNU');
+			// 	return this.getAppForms[this.frmID];
+			// 	// return [];
+			// },			
 		},	
 		methods: {
 			// ...mapMutations('App',['setAppForms_Data']),
@@ -155,6 +158,7 @@
 		data () {
 			return {
   				frmID: 'TBLMNUXXXX',
+                myForm: {}
 	      	}
 	    }
 	}

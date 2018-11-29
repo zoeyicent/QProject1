@@ -389,7 +389,9 @@
 						break;
 					case "grd":
 						o.Value = '';
-						o.Grid.Rows.data = [];
+						if (o.Grid.Rows != undefined) {
+							o.Grid.Rows.data = [];
+						}
 						// console.log(o);
 						break;
 					case "num":

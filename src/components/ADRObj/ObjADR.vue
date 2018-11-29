@@ -517,7 +517,7 @@
 		// activated () { console.log('ObjADR activated', 'Test 456')  },		
 		// deactivated () { console.log('ObjADR deactivated', 'Test 456')  },		
 		// watch: { },
-		computed: { 
+		computed: { //Begin Computed
 			...mapGetters('App',['getAppForms','getAppModules']),
 			ObjADR: {
 				get: function() {
@@ -657,7 +657,7 @@
 				return Val;
 
 			},
-		},	
+		},	//End Computed
 		validations() {
 			// console.log('validations -> '+this.ObjABC) 
 			return {

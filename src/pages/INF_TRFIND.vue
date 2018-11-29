@@ -1,5 +1,6 @@
 <template>
-  <div class="docs-table">
+  <div class="docs-table"
+ 	v-if="myForm.Properties === undefined ? false : true">
   <!-- 
   	v-if akan merender ulang (re-create object ulang) 
   	kalau sudah re-create
@@ -103,7 +104,9 @@
 	    		form: this,						// --> local this
 	    		formId: 'frmID',  				// --> local variabel name 
 	    		CommandClick: this.CommandClick
-	    	});
+	    	}).then(() => {               
+                this.myForm = this.getAppForms[this.frmID];
+            });
 
 	    },
 		// mounted() { console.log('INF_TRFIND mounted', 'Test 1222222') },	
@@ -114,11 +117,11 @@
 		// deactivated () { console.log('INF_TRFIND deactivated', 'active') },
 		computed: {
 	      	...mapGetters('App',['getAppForms']),
-			myForm() {
-				console.log('Masuk myForm INF_TRFIND');
-				return this.getAppForms[this.frmID];
-				// return [];
-			},			
+			// myForm() {
+			// 	console.log('Masuk myForm INF_TRFIND');
+			// 	return this.getAppForms[this.frmID];
+			// 	// return [];
+			// },			
 		},		
 							
 		methods: {
@@ -155,7 +158,8 @@
 		},			
 		data () {
 			return {
-  				frmID: 'INF_TRFINDXXXX'
+  				frmID: 'INF_TRFINDXXXX',
+                myForm: {}
 	      	}
 	    }
 	}

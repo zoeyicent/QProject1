@@ -208,7 +208,7 @@ export async function doAppMenuAction ({commit, state}, {frmID, mode}) {
                 commit('setAppForms_Data', { id: frmID, path:'Properties.tombol.E.show', data: false }); 
                 commit('setAppForms_Data', { id: frmID, path:'Properties.tombol.D.show', data: false }); 
                 commit('setAppForms_Data', { id: frmID, path:'Properties.tombol.V.show', data: false }); 
-	    		commit('setAppForms_Data', { id: frmID, path:'Properties.tombol.Save.show', data: true }); 
+	    		commit('setAppForms_Data', { id: frmID, path:'Properties.tombol.Save.show', data: false }); 
 	    		commit('setAppForms_Data', { id: frmID, path:'Properties.tombol.Cancel.show', data: true }); 
                 break;
             case "7": // Confirm/Approved
